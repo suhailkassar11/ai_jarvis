@@ -5,6 +5,7 @@ import { Montserrat } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import {LayoutDashboard,MessageSquare,ImageIcon,VideoIcon,MusicIcon,Code,Settings} from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { ApiLimitPro } from './api-limit';
 
 const montserrat=Montserrat({
     weight:"600",
@@ -57,7 +58,11 @@ const routes=[
     
 ]
 
-const Sidebar = () => {
+interface apiLimitProps{
+    apiLimitCount:number
+}
+
+const Sidebar = ({apiLimitCount=0}:apiLimitProps) => {
     const pathname=usePathname()
   return (
     <div className="text-white space-y-4 py-4 flex flex-col h-full bg-[#111827]">
@@ -84,6 +89,7 @@ const Sidebar = () => {
            ))}
         </div>
       </div>
+      <ApiLimitPro apiLimitCount={apiLimitCount}/>
     </div>
   )
 }

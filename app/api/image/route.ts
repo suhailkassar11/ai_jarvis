@@ -1,6 +1,7 @@
 import {OpenAI} from 'openai';
 import {NextResponse} from 'next/server';
 import { auth } from "@clerk/nextjs";
+import { CheckApiLimit, IncreaseApiLimit } from '@/lib/api-limit';
 
 
 const openai = new OpenAI({
@@ -28,13 +29,16 @@ export async function POST(
         if(!resolution){
             return new NextResponse("Unauthorized",{status:401});
         }
-    
+        const freeTrial=await CheckApiLimit()
+        if(!freeTrial){
+            return new NextResponse("You have exceeded your API limit for the day.",{status:403}) 
+        }
         const response= await openai.images.generate({
           prompt,
           n:parseInt(amount,10),
           size:resolution
           });
-          console.log(response)
+          await IncreaseApiLimit()
         return NextResponse.json(response.data);
     }catch(error){
         console.log("[IMAGE_ERROR]",error);
