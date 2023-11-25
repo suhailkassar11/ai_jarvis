@@ -5,12 +5,14 @@ import { MAX_FREE_COUNTS } from "@/constant";
 import { Progress } from "./ui/progress";
 import { Button } from "./ui/button";
 import { Zap } from "lucide-react";
+import { UseProModal } from "@/hooks/use-pro-modal";
 
 interface userApiLimitProps{
     apiLimitCount:number
 }
 
-export const ApiLimitPro=async({apiLimitCount}:userApiLimitProps)=>{
+export const ApiLimitPro=({apiLimitCount}:userApiLimitProps)=>{
+    const proModal=UseProModal()
     return (
         <div>
             <div>
@@ -23,7 +25,7 @@ export const ApiLimitPro=async({apiLimitCount}:userApiLimitProps)=>{
                 
                         <Progress className="h-2" value={(apiLimitCount/MAX_FREE_COUNTS)*100}/>
                         </div>
-                    <Button className="w-full"  variant="premium">
+                    <Button onClick={proModal.onOpen} className="w-full"  variant="premium">
                         Upgrade
                         <Zap className="fill-white w-4 h-4 ml-2"/>
                     </Button>

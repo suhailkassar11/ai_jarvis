@@ -18,9 +18,11 @@ import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from 'next/image';
+import { UseProModal } from "@/hooks/use-pro-modal";
 
 
 const Conversation=()=>{
+  const proModal=UseProModal()
     const [images,setImages]=useState<string[]>([])
     const router=useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
@@ -43,9 +45,10 @@ const Conversation=()=>{
           const urls=response.data.map((image:{url:string})=>image.url)
           setImages(urls)
           form.reset();
-        } catch (error) {
-          //TODO: Open Pro
-          console.log(error) 
+        }  catch (error:any) {
+          if(error?.response?.status===403) {
+            proModal.onOpen()
+           }
         }finally{
           router.refresh()
         }

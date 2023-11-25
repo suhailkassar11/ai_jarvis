@@ -16,8 +16,10 @@ import {OpenAI} from 'openai';
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
+import { UseProModal } from "@/hooks/use-pro-modal";
 
 const Music=()=>{
+  const proModal=UseProModal()
     const [music,setMusic]=useState<string>()
     const router=useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
@@ -36,9 +38,10 @@ const Music=()=>{
           const response = await axios.post("/api/music",values)
           setMusic(response.data.audio);
           form.reset();
-        } catch (error) {
-          //TODO: Open Pro
-          console.log(error) 
+        }  catch (error:any) {
+          if(error?.response?.status===403) {
+            proModal.onOpen()
+           }
         }finally{
           router.refresh()
         }

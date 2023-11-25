@@ -14,8 +14,10 @@ import { useState } from "react";
 import {useRouter} from 'next/navigation';
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
+import { UseProModal } from "@/hooks/use-pro-modal";
 
 const Video=()=>{
+  const proModal=UseProModal()
     const [video,setVideo]=useState<string>()
     const router=useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
@@ -34,9 +36,10 @@ const Video=()=>{
           const response = await axios.post("/api/video",values)
           setVideo(response.data[0]);
           form.reset();
-        } catch (error) {
-          //TODO: Open Pro
-          console.log(error) 
+        } catch (error:any) {
+          if(error?.response?.status===403) {
+            proModal.onOpen()
+           }
         }finally{
           router.refresh()
         }
